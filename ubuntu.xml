@@ -1,0 +1,35 @@
+<domain type='kvm'>
+  <name>ubuntu</name>
+  <memory unit='GB'>2</memory>
+  <vcpu>1</vcpu>
+   <os>
+ <type arch='x86_64' machine='pc-0.12'>hvm</type>
+    <boot dev='cdrom'/>
+  </os>
+ <features>
+    <pae/>
+    <acpi/>
+    <apic/>
+  </features>
+  <clock sync="localtime"/>
+  <devices>
+    <emulator>/usr/bin/kvm</emulator>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/tmp/ubuntu-22.04.4-desktop-amd64.iso'/>
+      <target dev='hdc' bus='ide'/>
+      <readonly/>
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='none'/>
+      <source file='/tmp/disk.qcow2'/>
+      <target dev='hda'/>
+    </disk>
+    <interface type='bridge'>
+        <source bridge='br0'/>
+        <virtualport type='openvswitch'/>
+        <model type='virtio' />
+    </interface>
+    <graphics type='vnc' port='-1' autoport='yes' keymap='fr' listen='0.0.0.0' passwd='password'/>
+  </devices>
+</domain>

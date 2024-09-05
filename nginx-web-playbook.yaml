@@ -1,0 +1,53 @@
+---
+- name: Install Nginx and run webpage
+  hosts: nginx_host
+  become: true
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+        
+    - name: Start nginx
+      service: 
+        name: nginx
+        state: started
+        enabled: yes 
+
+    - name: Create directory for static content
+      file:
+        path: /var/www/html/hello-world
+        state: directory
+        mode: 0755
+
+    - name: Create ports report for display and copy to Nginx location
+      command: sudo netstat -tulpn | grep LISTEN >> ports.txt
+      copy:
+        src: "ports.txt"
+        dest: /var/www/html/ports.txt
+        mode: 0644
+        remote_src: true
+
+
+    - name: Create "index.html" file with content
+      template:
+        src: "index.html.j2"
+        dest: /var/www/html/hello-world/index.html 
+        mode: 0644
+    - name: Copy "index.html" to default Nginx location
+      copy:
+        src: /var/www/html/hello-world/index.html
+        dest: /var/www/html/index.html
+        mode: 0644
+        remote_src: true
+
+    - name: Enable default Nginx website
+      file:
+        src: /etc/nginx/sites-available/default
+        path: /etc/nginx/sites-enabled/default
+        state: link
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

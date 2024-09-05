@@ -1,0 +1,7 @@
+[ubuntu]
+10.0.2.12 # server for VM
+
+[nginx_host]
+# 10.0.2.7 we get it as soon as VM is started
+
+localhost ansible_connection=local
